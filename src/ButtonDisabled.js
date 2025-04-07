@@ -27,7 +27,7 @@ function ButtonDisabled() {
     }
 
     return errors;
-  };
+  };  
 
   const handleSubmit = (values) => {
     alert(`Name: ${values.name}, Email: ${values.email}, Age: ${values.age}`);
@@ -55,7 +55,7 @@ function ButtonDisabled() {
                 name="name"
                 component="div"
                 style={{ color: "red" }}
-              />
+              ErrorMessage/>
             </div>
 
             <div>

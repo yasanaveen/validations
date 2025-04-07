@@ -1,32 +1,46 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import axios from "axios";
+import React from 'react';
+import { Formik, Field, Form, ErrorMessage } from 'formik';
 
-function FormikApiForm() {
+function FormikApiIntegration() {
   const initialValues = {
-    name: "",
-    job: "",
+    title: '',
+    body: '',
+    userId: 1
   };
 
   const validate = (values) => {
     const errors = {};
-    if (!values.name) {
-      errors.name = "Name is required";
+    
+    if (!values.title) {
+      errors.title = 'Title is required';
+    } else if (values.title.length < 5) {
+      errors.title = 'Title must be at least 5 characters';
     }
-    if (!values.job) {
-      errors.job = "Job is required";
+    
+    if (!values.body) {
+      errors.body = 'Body content is required';
+    } else if (values.body.length < 10) {
+      errors.body = 'Body must be at least 10 characters';
     }
+    
     return errors;
   };
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
-      const response = await axios.post("https://reqres.in/api/users", values);
-      alert(`User Created:\nName: ${response.data.name}\nJob: ${response.data.job}\nID: ${response.data.id}`);
-      resetForm(); // clear the form after submission
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        body: JSON.stringify(values),
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+        },
+      });
+      
+      const data = await response.json();
+      alert(`Post created successfully! ID: ${data.id}`);
+      resetForm();
     } catch (error) {
-      console.error("Error creating user:", error);
-      alert("Something went wrong!");
+      alert('Error submitting form: ' + error.message);
     } finally {
       setSubmitting(false);
     }
@@ -34,7 +48,7 @@ function FormikApiForm() {
 
   return (
     <div>
-      <h2>Submit Form to Open API (ReqRes)</h2>
+      <h2>Create a New Post</h2>
       <Formik
         initialValues={initialValues}
         validate={validate}
@@ -43,19 +57,44 @@ function FormikApiForm() {
         {({ isSubmitting }) => (
           <Form>
             <div>
-              <label htmlFor="name">Name:</label>
-              <Field type="text" name="name" placeholder="Enter name" />
-              <ErrorMessage name="name" component="div" style={{ color: "red" }} />
+              <label htmlFor="title">Title:</label>
+              <Field
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Enter post title"
+              />
+              <ErrorMessage name="title" component="div" 
+              style={{ color: "red" }}
+              />
             </div>
-
+            
             <div>
-              <label htmlFor="job">Job:</label>
-              <Field type="text" name="job" placeholder="Enter job title" />
-              <ErrorMessage name="job" component="div" style={{ color: "red" }} />
+              <label htmlFor="body">Content:</label>
+              <Field
+                as="textarea"
+                id="body"
+                name="body"
+                placeholder="Enter post content"
+                rows="5"
+              />
+              <ErrorMessage name="body" component="div" 
+              style={{ color: "red" }}
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="userId">User ID:</label>
+              <Field
+                type="number"
+                id="userId"
+                name="userId"
+                min="1"
+              />
             </div>
 
             <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Submit"}
+              {isSubmitting ? 'Submitting...' : 'Create Post'}
             </button>
           </Form>
         )}
@@ -64,4 +103,4 @@ function FormikApiForm() {
   );
 }
 
-export default FormikApiForm;
+export default FormikApiIntegration;

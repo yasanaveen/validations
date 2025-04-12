@@ -19,7 +19,7 @@ function FormikExample() {
     }
 
     if (!values.email) {
-      errors.email = 'Email is required'; 
+      errors.email = 'Email is required';
     }
 
     if (!values.age) {
@@ -90,8 +90,8 @@ function FormikExample() {
               <label htmlFor="age">Age:</label>
               <Field
                 type="number"
-                // id="age"
-                // name="age"
+                id="age"
+                name="age"
                 placeholder="Enter your age"
               />
               <ErrorMessage name="age" component="div" style={{ color: 'red' }} />
